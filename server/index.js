@@ -1,28 +1,45 @@
 // create express server
 const express = require('express');
 const mongoose = require('mongoose');
-const cors  = require('cors');
-const dotenv = require('dotenv');
+const cors = require('cors');
 const app = express();
-const PORT = 8000;
-dotenv.config({path: './config.env'});
+require('dotenv').config({ path: './config.env' });
 const DB = process.env.DATABASE
-const User = require('./model/userModel');
+const passport = require('passport');
+
+// define model schema (come first)
+require('./model/userModel');
+const passportConfig = require('./script/passportConfig');
+
+
+// Mongo DB Atlas cconnection
+mongoose.connect(DB).then(() => {
+    console.log("connection successfull")
+}).catch((err) => console.log(`no connection, error: ${err}`));
+
+passportConfig.authLocalStrategy(passport);
 
 //middlewares
 app.use(express.json())
-app.use(cors())
+app.use(cors());
+// store a session variable
+app.use(require('express-session')({
+    secret: "sessionsecretkey",
+    resave: true,
+    saveUninitialized: true
+}));
+
+// initialise passport and session
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/account', require('./controller/Account'));
 
-// Mongo DB Atlas cconnection
-mongoose.connect(DB).then(()=>{
-    console.log("connection successfull")
-}).catch((err)=>console.log(`no connection, error: ${err}`));
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
     res.send('success')
 })
 
-app.listen(PORT, ()=>{
-    console.log(`server running on ${PORT}`);
+app.listen(8000, () => {
+    console.log(`server running on 8000`);
 });
