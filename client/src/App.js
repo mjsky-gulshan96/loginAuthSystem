@@ -1,6 +1,7 @@
 import Register from "./pages/register/Register";
 import Login from "./pages/login/Login";
 import Home from "./pages/home/Home";
+import Profile from "./pages/profile/Profile";
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,7 +10,10 @@ import {
 
 function App() {
 
-  const user = false;
+  var user = sessionStorage.getItem('user');
+  if (user) {
+    user = JSON.parse(user);
+  }
   return (
     <>
       <Router>
@@ -17,11 +21,14 @@ function App() {
           <Route exact path='/'>
             <Home />
           </Route>
-          <Route path='/login'>
-            <Login />
+          <Route exact path='/profile'>
+            {user ? <Profile user ={user} /> : <Login />}
           </Route>
-          <Route path='/register'>
-            <Register />
+          <Route exact path='/login'>
+            {user ? <Profile user ={user}/> : <Login />}
+          </Route>
+          <Route exact path='/register'>
+            {user ? <Profile user ={user}/> : <Register />}
           </Route>
         </Switch>
       </Router>

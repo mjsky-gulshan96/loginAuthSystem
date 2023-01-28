@@ -11,8 +11,8 @@ function authLocalStrategy(passport) {
 			try {
 				let user = await User.findOne({ email: email });
 				if (!user) return done(null, false);
-
-				if (bcrypt.compare(password, user.password)) {
+				let checkPswd = await bcrypt.compare(password, user.password);
+				if (checkPswd) {
 					return done(null, user);
 				} else {
 					return done(null, false);

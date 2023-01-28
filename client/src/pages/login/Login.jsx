@@ -12,20 +12,24 @@ export default function Login() {
 
     const HandleClick = (e) => {
         e.preventDefault();
-
         const user = {
             email: email.current.value,
             password: password.current.value
         }
-
         axios({
             method: 'post',
             url: 'http://localhost:8000/account/Login',
             data: user
         }).then(function (res) {
-            console.log(res);
+            let data = res.data;
+            if (data.success) {
+                sessionStorage.setItem('user',JSON.stringify(data.user))
+                history.push('/profile');
+               window.location.reload()
+            }
         }).catch(function (err) {
-            console.log(err);
+            console.log(err.response);
+            alert(err.response.statusText)
         });
     }
 

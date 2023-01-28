@@ -21,4 +21,16 @@ function authorize(req, res, next) {
     next();
 }
 
-module.exports = authorize;
+// authenticate user with passport 
+function isAuthenticate(req, res, next){
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+       return res.status(400).json({message:'not authenticated'});
+    }
+}
+
+module.exports = {
+    authorize:authorize,
+    isAuthenticate:isAuthenticate
+}
