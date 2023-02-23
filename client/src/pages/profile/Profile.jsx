@@ -10,6 +10,7 @@ const Profile = ({user}) => {
             url: 'http://localhost:8000/account/Logout'
         }).then(function(res){
             sessionStorage.removeItem('user');
+            window.location.reload();
         }).catch(function(err){
             console.log(err);
         })
